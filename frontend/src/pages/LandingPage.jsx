@@ -20,7 +20,7 @@ function DashboardMockup() {
       <div style={{ background: '#1A1A1A', padding: '10px 16px', borderBottom: '1px solid var(--border)', display: 'flex', gap: 6, alignItems: 'center' }}>
         {['#FF5F57','#FEBC2E','#28C840'].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c }} />)}
         <div style={{ flex: 1, marginLeft: 10, background: 'rgba(255,255,255,0.06)', borderRadius: 4, padding: '3px 12px', fontSize: 11, color: 'var(--text3)', fontFamily: 'JetBrains Mono,monospace' }}>
-          digipatron.app/dashboard
+          digiwarden.app/dashboard
         </div>
       </div>
 
@@ -28,7 +28,7 @@ function DashboardMockup() {
       <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 0 }}>
         {/* Sidebar */}
         <div style={{ background: '#0F0F0F', borderRight: '1px solid var(--border)', padding: '16px 12px', fontSize: 12 }}>
-          <div style={{ color: 'var(--orange)', fontWeight: 700, marginBottom: 16, fontSize: 13 }}>DigiPatron</div>
+          <div style={{ color: 'var(--orange)', fontWeight: 700, marginBottom: 16, fontSize: 13 }}>DigiWarden</div>
           {['Dashboard','Products','Analyze','Done','Settings'].map((item, i) => (
             <div key={item} style={{
               padding: '7px 10px', borderRadius: 6, marginBottom: 2,
@@ -102,9 +102,9 @@ function DashboardMockup() {
 
 export default function LandingPage({ navigate }) {
   const features = [
-    { icon: Fingerprint, title: 'Fingerprint Detection', desc: 'Track image roots via fingerprint detection in aneyxs glace.' },
-    { icon: GitBranch,   title: 'Propagation Mapping',  desc: 'Track image copies, map propagation trees, and place.' },
-    { icon: FileText,    title: 'DMCA Workflow',         desc: 'Generate react violites in fiest dortam in DMCA workflow.' },
+    { icon: Fingerprint, title: 'Fingerprint Detection', desc: 'pHash + ORB + semantic embeddings fused into a single tamper-proof score.' },
+    { icon: GitBranch,   title: 'Propagation Mapping',  desc: 'Visualize exactly how copies spread across the internet as a live DAG.' },
+    { icon: FileText,    title: 'DMCA Workflow',         desc: 'AI-generated legal takedown notices backed by forensic evidence.' },
   ]
 
   const howSteps = [
@@ -115,9 +115,9 @@ export default function LandingPage({ navigate }) {
   ]
 
   const why = [
-    { icon: Shield, title: 'Copyright protection',    desc: 'Protecting copyright protection with eone ream-violet copyright protection.' },
-    { icon: Zap,    title: 'Rapid evidence gathering', desc: 'Rapid evidence xe onio evidence gathers oaaid and unsosavble sollance.' },
-    { icon: Globe,  title: 'Easy response actions',    desc: 'Easy easy andenmatle actions and udoreces and oet and response responses.' },
+    { icon: Shield, title: 'Cryptographic Provenance',   desc: 'SHA-256 + pHash vault registration proves ownership at the moment of upload.' },
+    { icon: Zap,    title: 'Automated Web Scanning',     desc: 'Gemini Vision identifies the image context; Google Custom Search finds copies across the internet.' },
+    { icon: Globe,  title: 'One-Click Legal Action',     desc: 'Generate platform-ready DMCA notices with mathematical fingerprint evidence cited.' },
   ]
 
   const Btn = ({ children, onClick, style = {}, outline = false }) => (

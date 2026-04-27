@@ -8,18 +8,6 @@ def build_propagation_dag(
     candidates: List[Dict[str, Any]],
     root_url: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """
-    Constructs a Directed Acyclic Graph (DAG) for the propagation tree visualization.
-
-    MVP implementation:
-    - Root is always `node-0`
-    - All discovered candidates are direct children of the root (a star DAG)
-
-    The backend will evolve this into a true lineage builder once we have:
-    - more candidate sources (web index)
-    - richer mutation classifiers
-    - timestamps & parent-selection heuristics
-    """
     root_url = root_url or f"/assets/{root_image_id}.png"
 
     nodes: List[Dict[str, Any]] = [
@@ -43,7 +31,6 @@ def build_propagation_dag(
     ]
     edges: List[Dict[str, Any]] = []
 
-    # Sort high similarity first for nicer visuals
     ordered = sorted(candidates, key=lambda c: float(c.get("similarity_score", 0.0)), reverse=True)
 
     for idx, cand in enumerate(ordered, start=1):

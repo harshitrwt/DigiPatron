@@ -8,7 +8,7 @@ import DashboardPage from './pages/DashboardPage'
 import TreePage from './pages/TreePage'
 
 const FOG = FOGMODULE.default ?? FOGMODULE
-const WORKFLOW_STORAGE_KEY = 'digipatron.workflow'
+const WORKFLOW_STORAGE_KEY = 'digiwarden.workflow'
 
 function loadStoredWorkflow() {
   if (typeof window === 'undefined') {

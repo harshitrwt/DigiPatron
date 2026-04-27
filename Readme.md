@@ -1,6 +1,6 @@
-# DigiPatron
+# DigiWarden
 
-DigiPatron reconstructs the lifecycle of digital media so teams can fingerprint an original asset, compare it against known copies, visualize propagation, and generate DMCA notices from the resulting evidence.
+DigiWarden reconstructs the lifecycle of digital media so teams can fingerprint an original asset, compare it against known copies, visualize propagation, and generate DMCA notices from the resulting evidence.
 
 ## Stack
 - **Backend:** FastAPI + SQLAlchemy

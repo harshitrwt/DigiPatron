@@ -5,12 +5,13 @@ const POLL_INTERVAL_MS = 1200
 const POLL_TIMEOUT_MS = 45000
 
 export const PIPELINE_STEPS = [
-  { id: 'upload', label: 'Register Original Asset', desc: 'POST /api/upload stores the source image and creates an asset ID.' },
-  { id: 'variants', label: 'Attach Candidate Copies', desc: 'Optional variants are uploaded and linked to the root asset.' },
-  { id: 'analyze', label: 'Start Analysis Job', desc: 'POST /api/analyze/{image_id} launches fingerprinting and scoring.' },
-  { id: 'poll', label: 'Track Live Job Status', desc: 'GET /api/images/{image_id}/status is polled until the job completes.' },
-  { id: 'results', label: 'Load Scores And Matches', desc: 'Analysis, similarity, fingerprint, and variant data are fetched live.' },
-  { id: 'tree', label: 'Build Propagation Tree', desc: 'GET /api/tree/{image_id} returns the graph rendered by the frontend.' },
+  { id: 'upload',   label: 'Register to Vault',        desc: 'SHA-256 + pHash recorded as cryptographic proof of ownership.' },
+  { id: 'variants', label: 'Attach Candidate Copies',  desc: 'Optional variants uploaded and linked to the root asset.' },
+  { id: 'webscan',  label: 'Scan Internet for Copies', desc: 'Gemini Vision + Google Custom Search scrape the web for matches.' },
+  { id: 'analyze',  label: 'Run Similarity Engine',    desc: 'pHash, ORB, and semantic scoring on all candidates.' },
+  { id: 'poll',     label: 'Track Live Job Status',    desc: 'Polling until the background analysis completes.' },
+  { id: 'results',  label: 'Load Scores & Matches',    desc: 'Analysis, similarity, fingerprint, and variant data fetched.' },
+  { id: 'tree',     label: 'Build Propagation Tree',   desc: 'Graph rendered from the backend tree response.' },
 ]
 
 function getRuntimeOrigin() {
