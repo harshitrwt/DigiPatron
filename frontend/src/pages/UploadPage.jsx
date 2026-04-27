@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { AlertCircle, ArrowRight, CheckCircle, Image, Loader, Plus, Upload, X } from 'lucide-react'
+import { AlertCircle, ArrowRight, CheckCircle, Image, Loader, Plus, Shield, Upload, X } from 'lucide-react'
 import { PIPELINE_STEPS, useUploadAndAnalyze } from '../hooks/useApi'
 
 function formatFileSize(file) {
@@ -196,6 +196,15 @@ export default function UploadPage({ navigate, workflow }) {
                     <div style={{ color: '#fff', fontSize: 14, fontWeight: 600 }}>{file.name}</div>
                     <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--text3)' }}>
                       {formatFileSize(file)} | {(file.type.split('/')[1] || 'image').toUpperCase()}
+                    </div>
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 5,
+                      marginTop: 6, padding: '3px 9px', borderRadius: 6,
+                      background: 'rgba(34,197,94,0.12)',
+                      border: '1px solid rgba(34,197,94,0.25)',
+                    }}>
+                      <Shield size={10} color="var(--green)" />
+                      <span style={{ fontSize: 10, color: 'var(--green)', fontWeight: 700, letterSpacing: '0.06em' }}>VAULT REGISTERED</span>
                     </div>
                   </div>
                   {!loading && (

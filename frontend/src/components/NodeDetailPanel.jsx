@@ -76,6 +76,22 @@ export default function NodeDetailPanel({ node, loadingExplanation, explanationE
         <div style={{ fontSize: 13, color: '#fff', fontWeight: 500 }}>{node.transformation}</div>
       </div>
 
+      {node.source_url && (
+        <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--border2)' }}>
+          <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--text3)', marginBottom: 6, letterSpacing: '0.08em' }}>
+            SCRAPED FROM
+          </div>
+          <a
+            href={node.source_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: 11, color: 'var(--orange)', wordBreak: 'break-all', lineHeight: 1.5, textDecoration: 'none' }}
+          >
+            {node.source_url}
+          </a>
+        </div>
+      )}
+
       <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--border2)' }}>
         <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
           <Info size={11} color="var(--orange)" />
