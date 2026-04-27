@@ -53,8 +53,9 @@ def _classify_counts(matches: List[Dict[str, Any]]) -> Dict[str, int]:
 
 
 def _compute_integrity_score(exact_copies: int, modified: int, infringing: int) -> int:
-    score = 100 - (exact_copies * 25 + infringing * 15 + modified * 5)
+    score = 100 - (exact_copies * 25 + infringing * 20 + modified * 8)
     return max(0, int(score))
+
 
 
 def create_analysis_job(db: Session, image_id: str) -> AnalysisJobRow:
