@@ -5,7 +5,7 @@ from typing import Optional
 import jwt
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
+import bcrypt
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
@@ -18,7 +18,7 @@ SECRET_KEY = "digiwarden-super-secret-hackathon-key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 1 week
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 router = APIRouter()
@@ -41,11 +41,13 @@ class TokenResponse(BaseModel):
 
 
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -94,14 +96,15 @@ def get_current_user_optional(token: Optional[str] = Depends(OAuth2PasswordBeare
 
 @router.post("/auth/register", response_model=TokenResponse)
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
-    existing = db.query(UserRow).filter(UserRow.email == request.email).first()
+    email_clean = request.email.strip().lower()
+    existing = db.query(UserRow).filter(UserRow.email == email_clean).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     user_id = str(uuid.uuid4())
     user = UserRow(
         id=user_id,
-        email=request.email,
+        email=email_clean,
         password_hash=get_password_hash(request.password),
         created_at=datetime.now(timezone.utc),
     )
@@ -117,7 +120,8 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
 
 @router.post("/auth/login", response_model=TokenResponse)
 def login(request: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(UserRow).filter(UserRow.email == request.email).first()
+    email_clean = request.email.strip().lower()
+    user = db.query(UserRow).filter(UserRow.email == email_clean).first()
     if not user or not verify_password(request.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
