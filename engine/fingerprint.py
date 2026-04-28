@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import os
 from typing import Dict, Any, Optional
+from .watermark import extract_watermark
 
 try:
     import onnxruntime as ort
@@ -73,8 +74,11 @@ def generate_semantic_embedding(image_path: str) -> Optional[np.ndarray]:
 
 
 def extract_all_fingerprints(image_path: str) -> Dict[str, Any]:
+    with open(image_path, "rb") as f:
+        img_bytes = f.read()
     return {
         "phash": generate_phash(image_path),
         "orb": generate_orb_descriptors(image_path),
-        "semantic": generate_semantic_embedding(image_path)
+        "semantic": generate_semantic_embedding(image_path),
+        "watermark_id": extract_watermark(img_bytes)
     }

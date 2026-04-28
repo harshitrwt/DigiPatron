@@ -148,6 +148,7 @@ def run_analysis_job(db: Session, job_id: str) -> None:
         for cand in candidates:
             candidate_abs = _storage_abspath(cand.storage_path)
             candidate_fp = extract_all_fingerprints(candidate_abs)
+            root_fp['id'] = root.id
             sim = compute_similarity(root_fp, candidate_fp)
             created_at = _isoformat_or_none(cand.created_at)
 

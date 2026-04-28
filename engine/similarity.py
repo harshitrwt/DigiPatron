@@ -58,6 +58,14 @@ def compare_semantic(emb1: Optional[np.ndarray], emb2: Optional[np.ndarray]) -> 
 
 
 def compute_similarity(fingerprint1: Dict[str, Any], fingerprint2: Dict[str, Any]) -> Dict[str, Any]:
+    # Active Defense: Steganographic Watermark Check
+    watermark_id = fingerprint2.get('watermark_id')
+    root_id = fingerprint1.get('id')
+    
+    is_watermark_match = False
+    if watermark_id and root_id and watermark_id == root_id:
+        is_watermark_match = True
+
     phash_score = compare_phash(fingerprint1.get('phash', ''), fingerprint2.get('phash', ''))
     orb_score = compare_orb(fingerprint1.get('orb'), fingerprint2.get('orb'))
     semantic_score = compare_semantic(fingerprint1.get('semantic'), fingerprint2.get('semantic'))
@@ -78,7 +86,10 @@ def compute_similarity(fingerprint1: Dict[str, Any], fingerprint2: Dict[str, Any
     combined_score = (phash_score * w_phash) + (orb_score * w_orb) + (semantic_score * w_semantic)
     combined_score_100 = round(combined_score * 100.0, 2)
 
-    if combined_score_100 >= 85:
+    if is_watermark_match:
+        combined_score_100 = 100.0
+        label = "Exact Copy"
+    elif combined_score_100 >= 85:
         label = "Likely Infringing"
     elif combined_score_100 >= 50:
         label = "Modified"
