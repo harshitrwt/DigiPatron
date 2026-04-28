@@ -17,6 +17,7 @@ ENV STORAGE_PATH=/data
 ENV DB_URL=sqlite:////data/contentgenome.db
 
 WORKDIR /app/backend
+ENV PYTHONPATH=/app
 EXPOSE 8000
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

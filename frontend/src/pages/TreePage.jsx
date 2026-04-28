@@ -79,13 +79,12 @@ export default function TreePage({ workflow, navigate }) {
   const nodesById = useMemo(() => new Map(nodes.map((node) => [node.id, node])), [nodes])
   const selectedNode = selectedNodeId ? nodesById.get(selectedNodeId) : null
 
+  /*
   useEffect(() => {
     if (!selectedNodeId || !imageId) {
       return
     }
 
-    // Use 'in' operator instead of truthiness check — an empty-string explanation
-    // is a valid cached result and must not trigger a re-fetch.
     if (selectedNodeId in explanations || loadingExplanationId === selectedNodeId || explanationErrors[selectedNodeId]) {
       return
     }
@@ -95,7 +94,6 @@ export default function TreePage({ workflow, navigate }) {
     fetchNodeExplanation(imageId, selectedNodeId)
       .then((explanation) => {
         if (!cancelled) {
-          // Store the result even if it's an empty string so we don't re-fetch.
           setExplanations((current) => ({ ...current, [selectedNodeId]: explanation || 'No explanation available.' }))
           setExplanationErrors((current) => {
             const next = { ...current }
@@ -122,6 +120,7 @@ export default function TreePage({ workflow, navigate }) {
       cancelled = true
     }
   }, [selectedNodeId, imageId, explanations, loadingExplanationId, explanationErrors])
+  */
 
   useEffect(() => {
     if (!hierarchy || !svgRef.current) {
@@ -417,30 +416,25 @@ export default function TreePage({ workflow, navigate }) {
 
       <div
         style={{
-          background: '#141414',
-          border: '1px solid rgba(255,107,26,0.1)',
-          borderRadius: 20,
+          background: '#030712',
+          border: '1px solid rgba(255,255,255,0.05)',
+          borderRadius: 24,
           position: 'relative',
           overflow: 'hidden',
-          minHeight: 600,
-          boxShadow: '0 0 60px rgba(255,107,26,0.04)',
+          minHeight: 620,
+          boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
         }}
       >
         <svg ref={svgRef} style={{ display: 'block', width: '100%', position: 'relative', zIndex: 1 }} />
+        {/* 
         {selectedNodeView ? (
           <NodeDetailPanel
             node={selectedNodeView}
             loadingExplanation={loadingExplanationId === selectedNodeView.id}
-            explanationError={explanationErrors[selectedNodeView.id]}
-            onDMCA={setDmcaNode}
             onClose={() => setSelectedNodeId(null)}
-            onViewSource={() => {
-              if (selectedNodeView.url) {
-                window.open(selectedNodeView.url, '_blank', 'noopener,noreferrer')
-              }
-            }}
           />
-        ) : null}
+        ) : null} 
+        */}
       </div>
 
       <div style={{ marginTop: 16, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
