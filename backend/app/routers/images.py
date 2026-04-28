@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
+from pathlib import Path
 from sqlalchemy.orm import Session
 
 from ..db import get_db
@@ -17,7 +18,7 @@ def get_image_meta(image_id: str, db: Session = Depends(get_db)) -> ImageMetaRes
     if not row:
         raise HTTPException(status_code=404, detail="Image not found.")
 
-    url = f"/assets/{row.storage_path.split('/')[-1]}"
+    url = f"/assets/{Path(row.storage_path).name}"
     return ImageMetaResponse(
         data={
             "image_id": row.id,
