@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import * as THREE from 'three'
-import FOGMODULE from 'vanta/dist/vanta.fog.min.js'
+import { useEffect, useState } from 'react'
 import Navbar from './components/Navbar'
 import LandingPage from './pages/LandingPage'
 import UploadPage from './pages/UploadPage'
@@ -9,15 +7,12 @@ import TreePage from './pages/TreePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import VaultPage from './pages/VaultPage'
+import LightRays from './components/LightRays'
 
-const FOG = FOGMODULE.default ?? FOGMODULE
 const WORKFLOW_STORAGE_KEY = 'digiwarden.workflow'
 
 function loadStoredWorkflow() {
-  if (typeof window === 'undefined') {
-    return null
-  }
-
+  if (typeof window === 'undefined') return null
   try {
     const raw = window.sessionStorage.getItem(WORKFLOW_STORAGE_KEY)
     return raw ? JSON.parse(raw) : null
@@ -29,80 +24,54 @@ function loadStoredWorkflow() {
 export default function App() {
   const [page, setPage] = useState('landing')
   const [workflow, setWorkflow] = useState(loadStoredWorkflow)
-  const vantaRef = useRef(null)
-  const vantaEffect = useRef(null)
 
   useEffect(() => {
-    if (!vantaEffect.current && vantaRef.current) {
-      vantaEffect.current = FOG({
-        el: vantaRef.current,
-        THREE,
-        highlightColor: 0xe8621a,
-        midtoneColor: 0xf07a35,
-        lowlightColor: 0x7a2e00,
-        baseColor: 0x1a0800,
-        blurFactor: 0.52,
-        speed: 1.4,
-        zoom: 0.7,
-      })
-    }
-
-    return () => {
-      if (vantaEffect.current) {
-        vantaEffect.current.destroy()
-        vantaEffect.current = null
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
+    if (typeof window === 'undefined') return
     try {
       if (workflow) {
         window.sessionStorage.setItem(WORKFLOW_STORAGE_KEY, JSON.stringify(workflow))
       } else {
         window.sessionStorage.removeItem(WORKFLOW_STORAGE_KEY)
       }
-    } catch {
-      // Ignore storage failures and keep the in-memory workflow.
-    }
+    } catch {}
   }, [workflow])
 
   const navigate = (nextPage, nextWorkflow) => {
-    if (nextWorkflow) {
-      setWorkflow(nextWorkflow)
-    }
-
+    if (nextWorkflow) setWorkflow(nextWorkflow)
     setPage(nextPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <>
-      <div
-        ref={vantaRef}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 0,
-        }}
-      />
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', position: 'relative', overflowX: 'hidden' }}>
+      {/* Cinematic Light Rays */}
+      <div style={{ 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        width: '100%', 
+        height: '80vh', 
+        zIndex: 1, 
+        pointerEvents: 'none',
+        opacity: 0.6 
+      }}>
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#ec9766"
+          raysSpeed={1.2}
+          lightSpread={0.8}
+          rayLength={1.5}
+          followMouse={true}
+          mouseInfluence={0.05}
+          noiseAmount={0.1}
+          distortion={0.05}
+          pulsating
+          fadeDistance={1.2}
+          saturation={0.9}
+        />
+      </div>
 
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 1,
-          backdropFilter: 'blur(26px) saturate(1.4)',
-          WebkitBackdropFilter: 'blur(26px) saturate(1.4)',
-          background: 'rgba(8, 8, 8, 0.55)',
-        }}
-      />
-
-      <div style={{ position: 'relative', zIndex: 2, paddingTop: 60 }}>
+      <div style={{ position: 'relative', zIndex: 2, paddingTop: 80 }}>
         <Navbar page={page} navigate={navigate} hasAsset={Boolean(workflow?.analysis?.image_id)} />
         <main>
           {page === 'landing' && <LandingPage navigate={navigate} />}
@@ -114,6 +83,6 @@ export default function App() {
           {page === 'vault' && <VaultPage navigate={navigate} />}
         </main>
       </div>
-    </>
+    </div>
   )
 }

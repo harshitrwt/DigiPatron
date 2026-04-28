@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Shield } from 'lucide-react';
+import { Shield, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function LoginPage({ navigate }) {
   const [email, setEmail] = useState('');
@@ -16,19 +16,14 @@ export default function LoginPage({ navigate }) {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       
       const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.detail || 'Failed to login');
-      }
+      if (!response.ok) throw new Error(data.detail || 'Failed to login');
       
       login(data.access_token, data.email);
       navigate('vault');
@@ -40,54 +35,101 @@ export default function LoginPage({ navigate }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col justify-center items-center p-4">
-      <div className="max-w-md w-full bg-slate-800 rounded-2xl shadow-xl border border-slate-700 p-8 space-y-6">
-        <div className="text-center">
-          <Shield className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-white">Welcome Back</h2>
-          <p className="text-slate-400 mt-2">Sign in to DigiWarden to manage your vault.</p>
+    <div style={{
+      minHeight: 'calc(100vh - 60px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 24,
+    }}>
+      <div style={{
+        width: '100%', maxWidth: 400,
+        background: '#080808',
+        border: '1px solid var(--border)',
+        borderRadius: 24, padding: '40px 32px',
+        backdropFilter: 'blur(10px)',
+        animation: 'scaleIn 0.4s ease-out',
+        boxShadow: '12px 12px 0px var(--orange), 0 32px 64px rgba(0,0,0,0.5)',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{
+            width: 48, height: 48, background: 'var(--orange-dim)',
+            border: '1px solid var(--orange-border)', borderRadius: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 16px',
+          }}>
+            <Shield size={24} color="var(--orange)" />
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 8 }}>Welcome Back</h2>
+          <p style={{ fontSize: 14, color: 'var(--text2)' }}>Enter your credentials to access your vault</p>
         </div>
-        
+
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg text-sm text-center">
+          <div style={{
+            background: 'rgba(255,59,92,0.1)', border: '1px solid rgba(255,59,92,0.2)',
+            color: '#FF3B5C', padding: '12px 16px', borderRadius: 12,
+            fontSize: 13, marginBottom: 24, textAlign: 'center',
+          }}>
             {error}
           </div>
         )}
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <label style={{ fontSize: 13, fontWeight: 500, color: 'var(--text2)', marginLeft: 4 }}>Email Address</label>
             <input
-              type="email"
-              required
-              value={email}
+              type="email" required value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com"
+              placeholder="name@company.com"
+              style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+                borderRadius: 12, padding: '12px 16px', color: '#fff', fontSize: 14,
+                outline: 'none', transition: 'border-color 0.2s',
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--orange-border)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border)'}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <label style={{ fontSize: 13, fontWeight: 500, color: 'var(--text2)', marginLeft: 4 }}>Password</label>
             <input
-              type="password"
-              required
-              value={password}
+              type="password" required value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
+              style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)',
+                borderRadius: 12, padding: '12px 16px', color: '#fff', fontSize: 14,
+                outline: 'none', transition: 'border-color 0.2s',
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--orange-border)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border)'}
             />
           </div>
+
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors disabled:opacity-50"
+            type="submit" disabled={loading}
+            style={{
+              marginTop: 8, padding: '12px', background: 'var(--orange)',
+              color: '#fff', border: 'none', borderRadius: 12,
+              fontSize: 15, fontWeight: 700, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              transition: 'all 0.2s',
+              opacity: loading ? 0.7 : 1,
+            }}
+            onMouseEnter={e => { if(!loading) e.target.style.background = 'var(--orange2)'; e.target.style.transform = 'translateY(-1px)' }}
+            onMouseLeave={e => { if(!loading) e.target.style.background = 'var(--orange)'; e.target.style.transform = 'none' }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? <Loader2 size={18} className="animate-spin" /> : <>Sign In <ArrowRight size={16} /></>}
           </button>
         </form>
-        
-        <div className="text-center text-sm text-slate-400 mt-6">
-          Don't have an account? <button type="button" onClick={() => navigate('register')} className="text-blue-400 hover:underline">Register here</button>
+
+        <div style={{ textAlign: 'center', marginTop: 32, fontSize: 14, color: 'var(--text3)' }}>
+          Don't have an account?{' '}
+          <button onClick={() => navigate('register')} style={{
+            background: 'none', border: 'none', color: 'var(--orange)',
+            fontWeight: 600, cursor: 'pointer', padding: 0,
+          }}>
+            Create one for free
+          </button>
         </div>
       </div>
     </div>

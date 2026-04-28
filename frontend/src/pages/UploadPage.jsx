@@ -448,34 +448,7 @@ export default function UploadPage({ navigate, workflow }) {
             </div>
           </div>
 
-          <div style={{ background: 'rgba(20,20,20,0.8)', border: '1px solid var(--border)', borderRadius: 14, padding: 18 }}>
-            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: 'var(--text3)', letterSpacing: '0.1em', marginBottom: 12 }}>ENDPOINTS USED</div>
-            {[
-              ['POST', '/api/upload'],
-              ['POST', '/api/images/{root}/variants'],
-              ['POST', '/api/analyze/{id}'],
-              ['GET', '/api/images/{id}/status'],
-              ['GET', '/api/analyze/{id}/result'],
-              ['GET', '/api/tree/{id}'],
-            ].map(([method, path]) => (
-              <div key={path} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 9 }}>
-                <span
-                  style={{
-                    fontFamily: 'JetBrains Mono, monospace',
-                    fontSize: 10,
-                    padding: '2px 7px',
-                    borderRadius: 4,
-                    background: method === 'POST' ? 'rgba(255,107,26,0.15)' : 'rgba(59,130,246,0.15)',
-                    color: method === 'POST' ? 'var(--orange)' : 'var(--blue)',
-                    fontWeight: 600,
-                  }}
-                >
-                  {method}
-                </span>
-                <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--text)' }}>{path}</span>
-              </div>
-            ))}
-          </div>
+          
         </div>
       </div>
     </div>

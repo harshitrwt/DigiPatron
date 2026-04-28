@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg:         #0C0C0C;
-  --bg2:        #141414;
+  --bg:         #000000;
+  --bg2:        #0a0a0a;
   --bg3:        #1A1A1A;
   --bg4:        #222222;
   --surface:    rgba(255,255,255,0.04);
@@ -56,4 +56,44 @@ body{
   background-size:200% 100%;
   animation:shimmer 1.4s ease infinite;
   border-radius:6px;
+}
+
+/* ── Responsive Utilities ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .feature-pills {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .responsive-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .responsive-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .section-padding {
+    padding: 60px 20px !important;
+  }
+  .mobile-hide {
+    display: none !important;
+  }
+  .mobile-center {
+    text-align: center !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
