@@ -15,6 +15,7 @@ import {
 import SimilarityGauge from '../components/SimilarityGauge'
 import DMCAModal from '../components/DMCAModal'
 import { formatRelativeTime, getDisplayLabel } from '../hooks/useApi'
+import { useAuth } from '../contexts/AuthContext'
 
 function formatScore(value) {
   return Math.round(Number(value) || 0)
@@ -24,7 +25,7 @@ function getTypeStyle(label) {
   if (label === 'Original') {
     return { color: 'var(--green)', background: 'rgba(34,197,94,0.1)' }
   }
-  if (label === 'Infringing') {
+  if (label === 'Infringing' || label === 'Exact Copy') {
     return { color: 'var(--red)', background: 'rgba(255,59,92,0.1)' }
   }
   if (label === 'Unmatched') {
@@ -60,6 +61,9 @@ function TypeBadge({ label }) {
 
 export default function DashboardPage({ workflow, navigate }) {
   const [dmcaNode, setDmcaNode] = useState(null)
+  const [isProtecting, setIsProtecting] = useState(false)
+  
+  const { token } = useAuth()
 
   const image = workflow?.image
   const analysis = workflow?.analysis
@@ -96,6 +100,29 @@ export default function DashboardPage({ workflow, navigate }) {
         return rightTime - leftTime
       })
   }, [similarity, tree])
+  const handleProtect = async () => {
+    if (!token || !analysis?.image_id) return;
+    try {
+      setIsProtecting(true);
+      const res = await fetch(`http://localhost:8000/api/protect/${analysis.image_id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Failed to protect image');
+      
+      const a = document.createElement('a');
+      a.href = data.data.url;
+      a.download = `${image.filename}_protected.jpg`;
+      a.click();
+    } catch (e) {
+      alert(`Error protecting image: ${e.message}`);
+    } finally {
+      setIsProtecting(false);
+    }
+  };
 
   if (!analysis || !image) {
     return (
@@ -126,7 +153,7 @@ export default function DashboardPage({ workflow, navigate }) {
     )
   }
 
-  const infringingRows = rows.filter((row) => row.label === 'Infringing')
+  const infringingRows = rows.filter((row) => row.label !== 'Unmatched' && row.label !== 'Original')
   const hasMatches = rows.length > 0
 
   return (
@@ -161,6 +188,29 @@ export default function DashboardPage({ workflow, navigate }) {
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
+          {token && (
+            <button
+              onClick={handleProtect}
+              disabled={isProtecting}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '11px 22px',
+                background: 'var(--blue)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 10,
+                fontSize: 14,
+                fontWeight: 700,
+                cursor: isProtecting ? 'not-allowed' : 'pointer',
+                opacity: isProtecting ? 0.7 : 1,
+                boxShadow: '0 0 22px rgba(59, 130, 246, 0.4)',
+              }}
+            >
+              <Shield size={14} /> {isProtecting ? 'Protecting...' : 'Protect & Download'}
+            </button>
+          )}
           <button
             onClick={() => navigate('tree')}
             style={{
@@ -362,7 +412,7 @@ export default function DashboardPage({ workflow, navigate }) {
               </div>
               <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--text3)' }}>{formatRelativeTime(row.createdAt)}</div>
               <div>
-                {row.label === 'Infringing' ? (
+                {(row.label !== 'Unmatched' && row.label !== 'Original') ? (
                   <button
                     onClick={() => setDmcaNode(row)}
                     style={{
