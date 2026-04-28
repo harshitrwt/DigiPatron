@@ -2,6 +2,11 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env from project root
+_project_root = Path(__file__).resolve().parents[2]
+load_dotenv(_project_root / ".env")
 
 
 def _is_truthy(raw: str | None, default: bool = False) -> bool:

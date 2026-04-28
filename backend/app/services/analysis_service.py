@@ -110,40 +110,46 @@ def run_analysis_job(db: Session, job_id: str) -> None:
         def source_kind_from_row(row: ImageRow) -> str:
             return "demo" if is_demo(row) else "user_upload"
 
+        def is_web(row: ImageRow) -> bool:
+            return (row.filename or "").lower().startswith("web_")
+
         stmt = select(ImageRow).where(ImageRow.variant_of == root.id).order_by(ImageRow.created_at.asc())
         variants = db.execute(stmt).scalars().all()
-        user_variants = [v for v in variants if not is_demo(v)]
+        
+        # True user variants are neither demo nor web
+        user_variants = [v for v in variants if not is_demo(v) and not is_web(v)]
 
         candidates = user_variants if user_variants else variants
-        if not candidates:
+        if not user_variants:
             try:
                 from .scraper_service import scrape_web_candidates  # noqa: WPS433
                 web_ids = scrape_web_candidates(db, root.id, root_abs)
-                if web_ids:
-                    variants = db.execute(stmt).scalars().all()
-                    candidates = list(variants)
             except Exception as scrape_exc:  # noqa: BLE001
                 import logging
                 logging.getLogger(__name__).warning("Web scraping failed, continuing: %s", scrape_exc)
 
-            if not candidates and demo_variants_enabled():
-                demo_variants = generate_demo_variants(root_abs)
-                for variant in demo_variants:
-                    variant_image_id = str(uuid4())
-                    storage_rel = save_bytes_to_uploads(variant.content, variant_image_id, suffix=variant.suffix)
-                    variant_row = ImageRow(
-                        id=variant_image_id,
-                        filename=f"demo_{variant.mutation_type.lower()}{variant.suffix}",
-                        storage_path=storage_rel,
-                        content_type="image/png" if variant.suffix == ".png" else "image/jpeg",
-                        size_bytes=len(variant.content),
-                        variant_of=root.id,
-                        created_at=_now_utc(),
-                    )
-                    db.add(variant_row)
-                db.commit()
-                variants = db.execute(stmt).scalars().all()
-                candidates = variants
+            if demo_variants_enabled():
+                # Only generate demo variants if they haven't been generated yet
+                existing_demo = [v for v in variants if is_demo(v)]
+                if not existing_demo:
+                    demo_variants = generate_demo_variants(root_abs)
+                    for variant in demo_variants:
+                        variant_image_id = str(uuid4())
+                        storage_rel = save_bytes_to_uploads(variant.content, variant_image_id, suffix=variant.suffix)
+                        variant_row = ImageRow(
+                            id=variant_image_id,
+                            filename=f"demo_{variant.mutation_type.lower()}{variant.suffix}",
+                            storage_path=storage_rel,
+                            content_type="image/png" if variant.suffix == ".png" else "image/jpeg",
+                            size_bytes=len(variant.content),
+                            variant_of=root.id,
+                            created_at=_now_utc(),
+                        )
+                        db.add(variant_row)
+                    db.commit()
+                
+            variants = db.execute(stmt).scalars().all()
+            candidates = variants
 
         for cand in candidates:
             candidate_abs = _storage_abspath(cand.storage_path)

@@ -5,6 +5,7 @@ from typing import List
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -44,7 +45,7 @@ async def upload_variant(
     db.add(row)
     db.commit()
 
-    url = f"/assets/{row.storage_path.split('/')[-1]}"
+    url = f"/assets/{Path(row.storage_path).name}"
     return VariantUploadResponse(
         data={
             "root_image_id": root_image_id,
@@ -77,7 +78,7 @@ def list_variants(
 
     items: List[ImageMetaData] = []
     for r in rows:
-        url = f"/assets/{r.storage_path.split('/')[-1]}"
+        url = f"/assets/{Path(r.storage_path).name}"
         items.append(
             ImageMetaData(
                 image_id=r.id,
