@@ -15,7 +15,7 @@
 
 ---
 
-## ✨ What is DigiWarden?
+## What is DigiWarden?
 
 DigiWarden is a **full-stack media forensics platform** that gives creators, photographers, athletes, and media companies the tools to:
 
@@ -29,7 +29,7 @@ DigiWarden is a **full-stack media forensics platform** that gives creators, pho
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
 | Landing Page | Results Dashboard | My Vault |
 |---|---|---|
@@ -37,23 +37,23 @@ DigiWarden is a **full-stack media forensics platform** that gives creators, pho
 
 ---
 
-## 🚀 Features at a Glance
+## Features at a Glance
 
 | Feature | Details |
 |---|---|
-| 🔐 **Secure Auth** | JWT-based login/register, bcrypt password hashing, 1-week tokens |
-| 🧬 **Fingerprinting** | SHA-256 (exact copy) + pHash (perceptual) + ORB (structural) + MobileNetV2 (semantic) |
-| 🌐 **Web Scraping** | Gemini Vision extracts keywords → Google Custom Search fetches candidates |
-| 📊 **Similarity Scoring** | Weighted 3-layer score with per-dimension breakdown |
-| 🌳 **Propagation Tree** | Interactive DAG showing how the image spread across the web |
-| ⚖️ **DMCA Generation** | Gemini-drafted legal notices with fingerprint evidence attached |
-| 💧 **Steganographic Watermark** | Invisible watermark embedded using `invisible-watermark` library |
-| 🗄️ **Personal Vault** | Secure per-user asset management with delete, view analysis, and account controls |
-| 🎭 **Demo Variants** | Auto-generated crop/rotate/recolor/blur/watermark variants for hackathon demos |
+| **Secure Auth** | JWT-based login/register, bcrypt password hashing, 1-week tokens |
+| **Fingerprinting** | SHA-256 (exact copy) + pHash (perceptual) + ORB (structural) + MobileNetV2 (semantic) |
+| **Web Scraping** | Gemini Vision extracts keywords → Google Custom Search fetches candidates |
+| **Similarity Scoring** | Weighted 3-layer score with per-dimension breakdown |
+| **Propagation Tree** | Interactive DAG showing how the image spread across the web |
+| **DMCA Generation** | Gemini-drafted legal notices with fingerprint evidence attached |
+| **Steganographic Watermark** | Invisible watermark embedded using `invisible-watermark` library |
+| **Personal Vault** | Secure per-user asset management with delete, view analysis, and account controls |
+| **Demo Variants** | Auto-generated crop/rotate/recolor/blur/watermark variants for hackathon demos |
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -93,7 +93,7 @@ DigiWarden is a **full-stack media forensics platform** that gives creators, pho
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -145,7 +145,7 @@ Frontend runs at → `http://localhost:5173`
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 digiwarden/
@@ -203,7 +203,7 @@ digiwarden/
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 | Variable | Required | Description |
 |---|---|---|
@@ -217,7 +217,7 @@ digiwarden/
 
 ---
 
-## 🧠 How the Analysis Pipeline Works
+##  How the Analysis Pipeline Works
 
 ```
 1. UPLOAD
